@@ -3968,7 +3968,7 @@
 <%--                        <div class="price">Giỏ hàng(${gioHang})</div>--%>
 <%--                    </a>--%>
                     <!-- Nút giỏ hàng -->
-                    <button class="btn" id="btnGioHang">🛒 Giỏ hàng<span style="color: red">(${gioHang})</span></button>
+                    <button class="btn" id="btnGioHang">🛒 Giỏ hàng<span style="color: red">(${slGioHang})</span></button>
 
                     <!-- Modal giỏ hàng -->
                     <div id="gioHangModal" class="modal-cart">
@@ -3977,38 +3977,41 @@
                             <h5 style="text-align: left;padding-bottom: 8px">GIỎ HÀNG</h5>
                             <p style="text-align: left">Bạn đang có 3 sản phẩm trong giỏ hàng.</p>
                             <hr>
-                            <div class="row">
-                                <div class="col-3">
-                                    <img src="${pageContext.request.contextPath}/img/shop-details/product-big.png" alt="" style="width: 70%">
+                            <c:forEach var="gioHang" items="${gioHang}">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <img src="${gioHang.img}" alt="" style="width: 100%">
+                                    </div>
+                                    <div class="col-9" style="text-align: left">
+                                        <p style="margin-bottom: 5px">	 ${gioHang.tenSanPham} - ${gioHang.tenMau} - ${gioHang.kichThuoc}</p>
+                                        <h5 style="margin-bottom: 6px">${gioHang.donGia}đ X ${gioHang.soLuong}</h5>
+                                        <button class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</button>
+                                    </div>
                                 </div>
-                                <div class="col-9" style="text-align: left">
-                                    <p style="margin-bottom: 5px">	Áo Polo Regular L.3.3433 - Rêu - XL</p>
-                                    <h5 style="margin-bottom: 6px">200$</h5>
-                                    <button class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</button>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-3">
-                                    <img src="${pageContext.request.contextPath}/img/shop-details/product-big.png" alt="" style="width: 70%">
-                                </div>
-                                <div class="col-9" style="text-align: left">
-                                    <p style="margin-bottom: 5px">	Áo Polo Regular L.3.3433 - Rêu - XL</p>
-                                    <h5 style="margin-bottom: 6px">200$</h5>
-                                    <button class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</button>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-3">
-                                    <img src="${pageContext.request.contextPath}/img/shop-details/product-big.png" alt="" style="width: 70%">
-                                </div>
-                                <div class="col-9" style="text-align: left">
-                                    <p style="margin-bottom: 5px">	Áo Polo Regular L.3.3433 - Rêu - XL</p>
-                                    <h5 style="margin-bottom: 6px">200$</h5>
-                                    <button class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</button>
-                                </div>
-                            </div>
+                                <hr>
+                            </c:forEach>
+
+<%--                            <div class="row">--%>
+<%--                                <div class="col-3">--%>
+<%--                                    <img src="${pageContext.request.contextPath}/img/shop-details/product-big.png" alt="" style="width: 70%">--%>
+<%--                                </div>--%>
+<%--                                <div class="col-9" style="text-align: left">--%>
+<%--                                    <p style="margin-bottom: 5px">	Áo Polo Regular L.3.3433 - Rêu - XL</p>--%>
+<%--                                    <h5 style="margin-bottom: 6px">200$</h5>--%>
+<%--                                    <button class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</button>--%>
+<%--                                </div>--%>
+<%--                            </div>--%>
+<%--                            <hr>--%>
+<%--                            <div class="row">--%>
+<%--                                <div class="col-3">--%>
+<%--                                    <img src="${pageContext.request.contextPath}/img/shop-details/product-big.png" alt="" style="width: 70%">--%>
+<%--                                </div>--%>
+<%--                                <div class="col-9" style="text-align: left">--%>
+<%--                                    <p style="margin-bottom: 5px">	Áo Polo Regular L.3.3433 - Rêu - XL</p>--%>
+<%--                                    <h5 style="margin-bottom: 6px">200$</h5>--%>
+<%--                                    <button class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</button>--%>
+<%--                                </div>--%>
+<%--                            </div>--%>
                             <hr style="height: 2px;background-color: black;width: 100%;margin: 20px auto">
                             <h4 style="float: left">Tổng tiền tạm tính: <p style="float: right;padding-left: 116px;padding-top: 4px;">807,000đ</p></h4>
                             <button class="btn btn-dark" style="width: 410px">TIẾN HÀNH ĐẶT HÀNG</button>
@@ -4041,21 +4044,21 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
                                         <div class="product__thumb__pic set-bg"
-                                             data-setbg="${pageContext.request.contextPath}/img/shop-details/thumb-1.png">
+                                             data-setbg="${hinhAnh.hinhAnh1}">
                                         </div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">
                                         <div class="product__thumb__pic set-bg"
-                                             data-setbg="${pageContext.request.contextPath}/img/shop-details/thumb-2.png">
+                                             data-setbg="${hinhAnh.hinhAnh2}">
                                         </div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">
                                         <div class="product__thumb__pic set-bg"
-                                             data-setbg="${pageContext.request.contextPath}/img/shop-details/thumb-3.png">
+                                             data-setbg="${hinhAnh.hinhAnh3}">
                                         </div>
                                     </a>
                                 </li>
@@ -4073,17 +4076,17 @@
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tabs-1" role="tabpanel">
                                     <div class="product__details__pic__item">
-                                        <img src="${pageContext.request.contextPath}/img/shop-details/product-big-2.png" alt="">
+                                        <img src="${hinhAnh.hinhAnh1}" alt="" style="max-width: 161%">
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="tabs-2" role="tabpanel">
                                     <div class="product__details__pic__item">
-                                        <img src="${pageContext.request.contextPath}/img/shop-details/product-big-3.png" alt="">
+                                        <img src="${hinhAnh.hinhAnh2}" alt="">
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="tabs-3" role="tabpanel">
                                     <div class="product__details__pic__item">
-                                        <img src="${pageContext.request.contextPath}/img/shop-details/product-big.png" alt="">
+                                        <img src="${hinhAnh.hinhAnh3}" alt="">
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="tabs-4" role="tabpanel">

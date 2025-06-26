@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
+import com.example.demo.response.GioHangResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,12 +72,19 @@ public class TrangChuController {
     public String detailProduct(@PathVariable Integer idProduct,
                                 Model model){
 
-        int gioHang = chiTietHoaDonRepository.countChiTietHoaDon();
-        model.addAttribute("gioHang",gioHang);
+        int slGioHang = chiTietHoaDonRepository.countChiTietHoaDon();
+        model.addAttribute("slGioHang",slGioHang);
 
         idChiTietSanPham= idProduct;
         Optional<ChiTietSanPham> chiTietSanPham = chiTietSanPhamRepository.findById(idProduct);
         model.addAttribute("chiTietSanPham",chiTietSanPham.get());
+
+        HinhAnh hinhAnh = hinhAnhRepository.findByHinhAnhTheoIdCTSP(idProduct);
+        model.addAttribute("hinhAnh",hinhAnh);
+
+        // Hiển thị thông tin sản phẩm lên giỏ hàng
+        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(1);
+        model.addAttribute("gioHang",gioHangResponses);
 
         List<KichThuoc> listKichThuoc = kichThuocRepository.findAll();
         List<MauSac> listMauSac = mauSacRepository.findAll();
