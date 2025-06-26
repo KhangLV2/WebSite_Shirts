@@ -181,6 +181,7 @@ public class TrangChuController {
 
     @GetMapping("/xem-chi-tiet-gio-hang")
     public String xemChiTietGioHang(){
+        // test git trên web xem có đc không
         return "shopping_cart";
     }
 
