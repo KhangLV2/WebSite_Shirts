@@ -27,4 +27,7 @@ public interface ChiTietHoaDonRepository extends JpaRepository<ChiTietHoaDon,Int
     List<GioHangResponse> getAllGioHang(Integer trangThai);
 
 
+    @Query("select cthd from ChiTietHoaDon cthd where cthd.idHoaDon.id =?1")
+    List<ChiTietHoaDon> findByIdHoaDon(Integer idHoaDon);
+
 }

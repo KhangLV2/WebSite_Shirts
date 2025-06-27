@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -85,6 +86,15 @@ public class TrangChuController {
         // Hiển thị thông tin sản phẩm lên giỏ hàng
         List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(1);
         model.addAttribute("gioHang",gioHangResponses);
+//
+//        BigDecimal tongTienNew;
+//        BigDecimal tt;
+//        int tongSLNew = 0;
+//        for(GioHangResponse listGH: gioHangResponses){
+//               tongTienNew = listGH.getDonGia();
+//               tongSLNew = listGH.getSoLuong();
+//               tt = BigDecimal.valueOf(tongTienNew*tongSLNew);
+//        }
 
         List<KichThuoc> listKichThuoc = kichThuocRepository.findAll();
         List<MauSac> listMauSac = mauSacRepository.findAll();
@@ -118,55 +128,21 @@ public class TrangChuController {
         List<ChiTietHoaDon> listChiTietHoaDon = chiTietHoaDonRepository.findAll();
         List<ChiTietSanPham> listCTSP = chiTietSanPhamRepository.findAll();
 
-
-        boolean flag = false;
-        int idHDCT = 0;
-
-        for (ChiTietHoaDon cthd: listChiTietHoaDon){
-            if (chiTietSanPham.getId()==cthd.getIdCTSP().getId()){
-                idHDCT = cthd.getId();
-                flag = true;
-                break;
-            }
-        }
-
-        if (flag){
-            ChiTietHoaDon cthd = chiTietHoaDonRepository.findByIdHDCT(idHDCT);
-            cthd.setSoLuong(cthd.getSoLuong()+sl);
-            cthd.setDonGia(cthd.getDonGia());
-            cthd.setTrangThai(cthd.getTrangThai());
-            chiTietHoaDonRepository.save(cthd);
-
-
-//    - Đối với bán hàng online thì khi nào thành toán mới trừ sl trong kho còn thêm vào giỏ hàng thì số lượng vẫn giữ nguyên
-
-//            int slMoi = 0;
-//            for (ChiTietSanPham ctsp: listCTSP){
-//                if (cthd.getIdCTSP().getId()==ctsp.getId()){
-//                    slMoi = ctsp.getSoLuong()-sl;
-//                }
-//            }
-//            ChiTietSanPham chiTietSanPham1 = chiTietSanPhamRepository.findByIdCTSP(idChiTietSanPham);
-//            chiTietSanPham1.setSoLuong(slMoi);
-//            chiTietSanPham1.setMoTa(chiTietSanPham1.getMoTa());
-//            chiTietSanPham1.setTrangThai(chiTietSanPham1.getTrangThai());
-//            chiTietSanPhamRepository.save(chiTietSanPham1);
-
-            redirectAttributes.addFlashAttribute("successMessage","Thêm sản phẩm vào giỏ hàng thành công");
-
-        }else {
-
+        HoaDon hoaDonKH = hoaDonRepository.findByKHandLoaiHDandTrangThai(3,HoaDonRepository.HOA_DON_ON,1);
+        System.out.println("-----------------------Hóa đơn khách hàng---------------------------"+hoaDonKH.getId());
+        //Nếu khách hàng chưa có hóa đơn thì tạo hóa đơn mới cho khách hàng
+        if (hoaDonKH==null){
 
             try {
-                //Tạo hóa đơn
                 HoaDon hoaDon = new HoaDon();
                 hoaDon.setMa("HD" + (count + 001));
                 hoaDon.setPhuongThucThanhToan(1);
                 KhachHang khachHang = new KhachHang();
-                khachHang.setId(1);
+                khachHang.setId(3);
                 hoaDon.setIdKhachHang(khachHang);
                 hoaDon.setNgayTao(LocalDateTime.now().withNano(0));
                 hoaDon.setTrangThai(1);
+                hoaDon.setLoaiHoaDon(1);
                 hoaDonRepository.save(hoaDon);
 
                 ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon();
@@ -177,14 +153,70 @@ public class TrangChuController {
                 chiTietHoaDon.setTrangThai(1);
                 chiTietHoaDonRepository.save(chiTietHoaDon);
                 redirectAttributes.addFlashAttribute("successMessage", "Thêm sản phẩm vào giỏ hàng thành công");
-
-            } catch (Exception e) {
+            }catch (Exception e){
                 e.printStackTrace();
             }
+
+        }else { //Nếu hóa đơn có rồi thì thêm sản phẩm vào giỏ hàng
+            // Đối với sản phẩm có rồi thì cộng dồn số lượng
+            boolean flag = false;
+            int idHDCT = 0;
+            List<ChiTietHoaDon> chiTietHoaDons = chiTietHoaDonRepository.findByIdHoaDon(hoaDonKH.getId());
+            for (ChiTietHoaDon cthd: chiTietHoaDons){
+                if (chiTietSanPham.getId()==cthd.getIdCTSP().getId()){
+                    idHDCT = cthd.getId();
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (flag){
+                try {
+                    ChiTietHoaDon cthd = chiTietHoaDonRepository.findByIdHDCT(idHDCT);
+                    cthd.setSoLuong(cthd.getSoLuong()+sl);
+                    cthd.setDonGia(cthd.getDonGia());
+                    cthd.setTrangThai(cthd.getTrangThai());
+                    chiTietHoaDonRepository.save(cthd);
+
+                    redirectAttributes.addFlashAttribute("successMessage","Thêm sản phẩm vào giỏ hàng thành công");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }else { //Check sản phẩm chưa có trong giỏ hàng thì thêm mới
+
+                try {
+
+                    ChiTietHoaDon chiTietHoaDonMoi = new ChiTietHoaDon();
+                    chiTietHoaDonMoi.setIdHoaDon(hoaDonKH);
+                    chiTietHoaDonMoi.setIdCTSP(chiTietSanPham);
+                    chiTietHoaDonMoi.setSoLuong(sl);
+                    chiTietHoaDonMoi.setDonGia(chiTietSanPham.getGiaBan());
+                    chiTietHoaDonMoi.setTrangThai(1);
+                    chiTietHoaDonRepository.save(chiTietHoaDonMoi);
+                    redirectAttributes.addFlashAttribute("successMessage","Thêm sản phẩm vào giỏ hàng thành công");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
         }
 
         return "redirect:/cua-hang/detail-product/"+ idChiTietSanPham;
     }
+
+//    - Đối với bán hàng online thì khi nào thành toán mới trừ sl trong kho còn thêm vào giỏ hàng thì số lượng vẫn giữ nguyên
+
+    //            int slMoi = 0;
+//            for (ChiTietSanPham ctsp: listCTSP){
+//                if (cthd.getIdCTSP().getId()==ctsp.getId()){
+//                    slMoi = ctsp.getSoLuong()-sl;
+//                }
+//            }
+//            ChiTietSanPham chiTietSanPham1 = chiTietSanPhamRepository.findByIdCTSP(idChiTietSanPham);
+//            chiTietSanPham1.setSoLuong(slMoi);
+//            chiTietSanPham1.setMoTa(chiTietSanPham1.getMoTa());
+//            chiTietSanPham1.setTrangThai(chiTietSanPham1.getTrangThai());
+//            chiTietSanPhamRepository.save(chiTietSanPham1);
 
 
     @GetMapping("/xem-chi-tiet-gio-hang")
