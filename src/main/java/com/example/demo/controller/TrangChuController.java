@@ -45,6 +45,9 @@ public class TrangChuController {
     @Autowired
     private ChiTietHoaDonRepository chiTietHoaDonRepository;
 
+    @Autowired
+    private KhachHangRepository khachHangRepository;
+
     private Integer idChiTietSanPham;
 
     public TrangChuController() {
@@ -67,6 +70,30 @@ public class TrangChuController {
         model.addAttribute("listMauSac",listMauSac);
 
         return "shop";
+    }
+
+    @GetMapping("/login")
+    public String loginForm(){
+        return "form";
+    }
+
+    @PostMapping("/submit-login")
+    public String submitLogin(@RequestParam String taiKhoan,
+                              @RequestParam String matKhau,
+                              RedirectAttributes redirectAttributes,
+                              Model model){
+        System.out.println("-----------Tài khoàn---------------"+taiKhoan);
+        System.out.println("-----------Mật khẩu---------------"+matKhau);
+
+        KhachHang khachHang = khachHangRepository.getByTaiKhoanAndMatKhau(taiKhoan, matKhau);
+
+        if(khachHang==null) {
+            model.addAttribute("mess", "Tài khoản hoặc mật khẩu không chính xác");
+            return "form";
+        }else {
+            return "redirect:/cua-hang";
+        }
+
     }
 
     @GetMapping("/detail-product/{idProduct}")
