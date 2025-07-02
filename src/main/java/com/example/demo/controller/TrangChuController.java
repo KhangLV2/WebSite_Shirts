@@ -49,9 +49,11 @@ public class TrangChuController {
     private KhachHangRepository khachHangRepository;
 
     private Integer idChiTietSanPham;
+    private String tenKhachHang;
 
     public TrangChuController() {
         idChiTietSanPham=0;
+        tenKhachHang = "";
     }
 
     @GetMapping()
@@ -68,6 +70,7 @@ public class TrangChuController {
         model.addAttribute("listKichThuoc",listKichThuoc);
         model.addAttribute("listKieuTay",listKieuTay);
         model.addAttribute("listMauSac",listMauSac);
+        model.addAttribute("tenKH",tenKhachHang);
 
         return "shop";
     }
@@ -86,6 +89,8 @@ public class TrangChuController {
         System.out.println("-----------Mật khẩu---------------"+matKhau);
 
         KhachHang khachHang = khachHangRepository.getByTaiKhoanAndMatKhau(taiKhoan, matKhau);
+        KhachHang findTenKH = khachHangRepository.checkTaiKhoan(taiKhoan);
+        tenKhachHang = findTenKH.getHoTen();
 
         if(khachHang==null) {
             model.addAttribute("mess", "Tài khoản hoặc mật khẩu không chính xác");
@@ -94,6 +99,33 @@ public class TrangChuController {
             return "redirect:/cua-hang";
         }
 
+    }
+
+    @PostMapping("/register")
+    public String dangKy(@RequestParam String hoTen,
+                         @RequestParam String sdt,
+                         @RequestParam String email,
+                         @RequestParam String taiKhoan,
+                         @RequestParam String matKhau){
+
+        KhachHang checkKH = khachHangRepository.checkTaiKhoan(taiKhoan);
+
+        if (checkKH==null){
+            KhachHang khachHang = new KhachHang();
+            khachHang.setHoTen(hoTen);
+            khachHang.setSdt(sdt);
+            khachHang.setEmail(email);
+            khachHang.setTaiKhoan(taiKhoan);
+            khachHang.setMatKhau(matKhau);
+            khachHangRepository.save(khachHang);
+            return "redirect:/cua-hang";
+        }
+
+        if (checkKH!=null && taiKhoan.equals(checkKH.getTaiKhoan())){
+            return "redirect:/cua-hang/login";
+        }
+
+        return "redirect:/cua-hang";
     }
 
     @GetMapping("/detail-product/{idProduct}")

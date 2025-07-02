@@ -9,4 +9,7 @@ public interface KhachHangRepository extends JpaRepository<KhachHang,Integer> {
     @Query("select kh from KhachHang kh where kh.taiKhoan=?1 and kh.matKhau=?2")
     KhachHang getByTaiKhoanAndMatKhau(String taiKhoan,String matKhau);
 
+    @Query("select kh from KhachHang kh where kh.taiKhoan=?1")
+    KhachHang checkTaiKhoan(String taiKhoan);
+
 }

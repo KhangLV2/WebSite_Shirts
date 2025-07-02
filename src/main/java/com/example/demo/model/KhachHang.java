@@ -37,6 +37,9 @@ public class KhachHang {
     @Column(name = "MatKhau")
     private String matKhau;
 
+    @Column(name = "Sdt")
+    private String sdt;
+
     @Column(name = "AnhDiaDien")
     private String anhDaiDien;
 

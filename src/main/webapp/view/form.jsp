@@ -179,22 +179,28 @@
     </form>
 
     <!-- Form Đăng ký -->
-    <div id="register" class="form-content">
-        <div class="input-group">
-            <input type="text" placeholder="Họ tên" required>
+    <form action="/cua-hang/register" method="post">
+        <div id="register" class="form-content">
+            <div class="input-group">
+                <input type="text" placeholder="Họ tên" required name="hoTen">
+            </div>
+            <div class="input-group">
+                <input type="text" placeholder="Số điện thoại" required name="sdt">
+            </div>
+            <div class="input-group">
+                <input type="email" placeholder="Email" required name="email">
+            </div>
+            <div class="input-group">
+                <input type="text" placeholder="Tên đăng nhập"  name="taiKhoan" required>
+            </div>
+            <div class="input-group">
+                <input type="password" placeholder="Mật khẩu" class="password" name="matKhau" required>
+                <span class="toggle-password" onclick="togglePassword(this)">👁️</span>
+            </div>
+            <button type="submit" class="submit-btn">Đăng ký</button>
         </div>
-        <div class="input-group">
-            <input type="text" placeholder="Số điện thoại" required>
-        </div>
-        <div class="input-group">
-            <input type="email" placeholder="Email" required>
-        </div>
-        <div class="input-group">
-            <input type="password" placeholder="Mật khẩu" class="password" required>
-            <span class="toggle-password" onclick="togglePassword(this)">👁️</span>
-        </div>
-        <button class="submit-btn">Đăng ký</button>
-    </div>
+    </form>
+
 </div>
 
 <script>
