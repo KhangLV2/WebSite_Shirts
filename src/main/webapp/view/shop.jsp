@@ -48,7 +48,7 @@
                     <div class="header__top__right">
                         <div class="header__top__links">
                             <a href="/cua-hang/login">Sign in</a>
-                            <a href="#">Xin chào ${tenKH}</a>
+                            <a href="#">${tenKH}</a>
                         </div>
                         <div class="header__top__hover">
                             <span>Usd <i class="arrow_carrot-down"></i></span>

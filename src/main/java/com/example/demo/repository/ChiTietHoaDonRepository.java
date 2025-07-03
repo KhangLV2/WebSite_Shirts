@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface ChiTietHoaDonRepository extends JpaRepository<ChiTietHoaDon,Integer> {
 
-    @Query(value = "SELECT COUNT(*) FROM dbo.ChiTietHoaDon",nativeQuery = true)
-    Integer countChiTietHoaDon();
+    @Query(value = "SELECT COUNT(*) FROM ChiTietHoaDon hdct where hdct.idHoaDon.idKhachHang.id=?1 and hdct.trangThai=?2")
+    Integer countChiTietHoaDon(Integer idKH,Integer trangThai);
 
     @Query("select cthd from ChiTietHoaDon cthd where cthd.id=?1")
     ChiTietHoaDon findByIdHDCT(Integer id);
@@ -23,8 +23,9 @@ public interface ChiTietHoaDonRepository extends JpaRepository<ChiTietHoaDon,Int
             "FROM ChiTietHoaDon cthd " +
             "JOIN ChiTietSanPham ctsp ON cthd.idCTSP.id = ctsp.id " +
             "JOIN HinhAnh img ON ctsp.id = img.idCTSP.id " +
-            "WHERE cthd.trangThai = ?1")
-    List<GioHangResponse> getAllGioHang(Integer trangThai);
+            "JOIN HoaDon hd on hd.id = cthd.idHoaDon.id " +
+            "WHERE hd.idKhachHang.id =?1 and hd.trangThai = ?2")
+    List<GioHangResponse> getAllGioHang(Integer idKH ,Integer trangThai);
 
 
     @Query("select cthd from ChiTietHoaDon cthd where cthd.idHoaDon.id =?1")

@@ -50,9 +50,11 @@ public class TrangChuController {
 
     private Integer idChiTietSanPham;
     private String tenKhachHang;
+    private Integer idKhachHang;
 
     public TrangChuController() {
         idChiTietSanPham=0;
+        idKhachHang = 0;
         tenKhachHang = "";
     }
 
@@ -91,6 +93,7 @@ public class TrangChuController {
         KhachHang khachHang = khachHangRepository.getByTaiKhoanAndMatKhau(taiKhoan, matKhau);
         KhachHang findTenKH = khachHangRepository.checkTaiKhoan(taiKhoan);
         tenKhachHang = findTenKH.getHoTen();
+        idKhachHang = findTenKH.getId();
 
         if(khachHang==null) {
             model.addAttribute("mess", "Tài khoản hoặc mật khẩu không chính xác");
@@ -132,7 +135,7 @@ public class TrangChuController {
     public String detailProduct(@PathVariable Integer idProduct,
                                 Model model){
 
-        int slGioHang = chiTietHoaDonRepository.countChiTietHoaDon();
+        int slGioHang = chiTietHoaDonRepository.countChiTietHoaDon(idKhachHang,1);
         model.addAttribute("slGioHang",slGioHang);
 
         idChiTietSanPham= idProduct;
@@ -143,7 +146,7 @@ public class TrangChuController {
         model.addAttribute("hinhAnh",hinhAnh);
 
         // Hiển thị thông tin sản phẩm lên giỏ hàng
-        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(1);
+        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(idKhachHang,1);
         model.addAttribute("gioHang",gioHangResponses);
 //
 //        BigDecimal tongTienNew;
@@ -171,7 +174,7 @@ public class TrangChuController {
           int sl = Integer.parseInt(soLuong);
 
         System.out.println("----------------SL----------"+sl);
-
+        System.out.println("-------------------id khách hàng-------------------"+idKhachHang);
         System.out.println("----------------------------"+kichThuoc);
         System.out.println("----------------------------"+mauSac);
         System.out.println("----------------------------"+idSanPham);
@@ -187,8 +190,8 @@ public class TrangChuController {
         List<ChiTietHoaDon> listChiTietHoaDon = chiTietHoaDonRepository.findAll();
         List<ChiTietSanPham> listCTSP = chiTietSanPhamRepository.findAll();
 
-        HoaDon hoaDonKH = hoaDonRepository.findByKHandLoaiHDandTrangThai(3,HoaDonRepository.HOA_DON_ON,1);
-        System.out.println("-----------------------Hóa đơn khách hàng---------------------------"+hoaDonKH.getId());
+        HoaDon hoaDonKH = hoaDonRepository.findByKHandLoaiHDandTrangThai(idKhachHang,HoaDonRepository.HOA_DON_ON,1);
+//        System.out.println("-----------------------Hóa đơn khách hàng---------------------------"+hoaDonKH.getId());
         //Nếu khách hàng chưa có hóa đơn thì tạo hóa đơn mới cho khách hàng
         if (hoaDonKH==null){
 
@@ -197,7 +200,7 @@ public class TrangChuController {
                 hoaDon.setMa("HD" + (count + 001));
                 hoaDon.setPhuongThucThanhToan(1);
                 KhachHang khachHang = new KhachHang();
-                khachHang.setId(3);
+                khachHang.setId(idKhachHang);
                 hoaDon.setIdKhachHang(khachHang);
                 hoaDon.setNgayTao(LocalDateTime.now().withNano(0));
                 hoaDon.setTrangThai(1);
