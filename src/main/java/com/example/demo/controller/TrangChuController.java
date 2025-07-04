@@ -74,6 +74,22 @@ public class TrangChuController {
         model.addAttribute("listMauSac",listMauSac);
         model.addAttribute("tenKH",tenKhachHang);
 
+        // Hiển thị thông tin sản phẩm lên giỏ hàng
+        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(idKhachHang,1);
+        model.addAttribute("gioHang",gioHangResponses);
+
+        int slGioHang = chiTietHoaDonRepository.countChiTietHoaDon(idKhachHang,1);
+        model.addAttribute("slGioHang",slGioHang);
+
+        BigDecimal tongTienNew = BigDecimal.ZERO;
+        for(GioHangResponse listGH: gioHangResponses){
+            tongTienNew = tongTienNew.add(listGH.getDonGia().multiply(BigDecimal.valueOf(listGH.getSoLuong())));
+
+        }
+
+        System.out.println("------------------------Tổng tiền--------------------------------"+tongTienNew);
+        model.addAttribute("tongTien",tongTienNew);
+
         return "shop";
     }
 
@@ -148,15 +164,15 @@ public class TrangChuController {
         // Hiển thị thông tin sản phẩm lên giỏ hàng
         List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(idKhachHang,1);
         model.addAttribute("gioHang",gioHangResponses);
-//
-//        BigDecimal tongTienNew;
-//        BigDecimal tt;
-//        int tongSLNew = 0;
-//        for(GioHangResponse listGH: gioHangResponses){
-//               tongTienNew = listGH.getDonGia();
-//               tongSLNew = listGH.getSoLuong();
-//               tt = BigDecimal.valueOf(tongTienNew*tongSLNew);
-//        }
+
+        BigDecimal tongTienNew = BigDecimal.ZERO;
+        for(GioHangResponse listGH: gioHangResponses){
+            tongTienNew = tongTienNew.add(listGH.getDonGia().multiply(BigDecimal.valueOf(listGH.getSoLuong())));
+
+        }
+
+        System.out.println("------------------------Tổng tiền--------------------------------"+tongTienNew);
+        model.addAttribute("tongTien",tongTienNew);
 
         List<KichThuoc> listKichThuoc = kichThuocRepository.findAll();
         List<MauSac> listMauSac = mauSacRepository.findAll();
@@ -285,6 +301,13 @@ public class TrangChuController {
     public String xemChiTietGioHang(){
         // test git trên web xem có đc không
         return "shopping_cart";
+    }
+
+    @GetMapping("/xoa-product-gio-hang/{idHDCT}")
+    public String xoaProductCard(@PathVariable Integer idHDCT){
+
+        chiTietHoaDonRepository.deleteById(idHDCT);
+        return "redirect:/cua-hang/detail-product/"+ idChiTietSanPham;
     }
 
 }

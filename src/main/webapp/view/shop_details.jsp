@@ -3975,45 +3975,24 @@
                         <div class="modal-cart-content">
                             <span class="close">&times;</span>
                             <h5 style="text-align: left;padding-bottom: 8px">GIỎ HÀNG</h5>
-                            <p style="text-align: left">Bạn đang có 3 sản phẩm trong giỏ hàng.</p>
+                            <p style="text-align: left">Bạn đang có ${slGioHang} sản phẩm trong giỏ hàng.</p>
                             <hr>
                             <c:forEach var="gioHang" items="${gioHang}">
                                 <div class="row">
                                     <div class="col-3">
                                         <img src="${gioHang.img}" alt="" style="width: 100%">
                                     </div>
+                                    <input type="hidden" name="idHD" value="${gioHang.idHoaDon}">
                                     <div class="col-9" style="text-align: left">
                                         <p style="margin-bottom: 5px">	 ${gioHang.tenSanPham} - ${gioHang.tenMau} - ${gioHang.kichThuoc}</p>
                                         <h5 style="margin-bottom: 6px">${gioHang.donGia}đ X ${gioHang.soLuong}</h5>
-                                        <button class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</button>
+                                        <a href="/cua-hang/xoa-product-gio-hang/${gioHang.idHoaDonChiTiet}" class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</a>
                                     </div>
                                 </div>
                                 <hr>
                             </c:forEach>
-
-<%--                            <div class="row">--%>
-<%--                                <div class="col-3">--%>
-<%--                                    <img src="${pageContext.request.contextPath}/img/shop-details/product-big.png" alt="" style="width: 70%">--%>
-<%--                                </div>--%>
-<%--                                <div class="col-9" style="text-align: left">--%>
-<%--                                    <p style="margin-bottom: 5px">	Áo Polo Regular L.3.3433 - Rêu - XL</p>--%>
-<%--                                    <h5 style="margin-bottom: 6px">200$</h5>--%>
-<%--                                    <button class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</button>--%>
-<%--                                </div>--%>
-<%--                            </div>--%>
-<%--                            <hr>--%>
-<%--                            <div class="row">--%>
-<%--                                <div class="col-3">--%>
-<%--                                    <img src="${pageContext.request.contextPath}/img/shop-details/product-big.png" alt="" style="width: 70%">--%>
-<%--                                </div>--%>
-<%--                                <div class="col-9" style="text-align: left">--%>
-<%--                                    <p style="margin-bottom: 5px">	Áo Polo Regular L.3.3433 - Rêu - XL</p>--%>
-<%--                                    <h5 style="margin-bottom: 6px">200$</h5>--%>
-<%--                                    <button class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</button>--%>
-<%--                                </div>--%>
-<%--                            </div>--%>
                             <hr style="height: 2px;background-color: black;width: 100%;margin: 20px auto">
-                            <h4 style="float: left">Tổng tiền tạm tính: <p style="float: right;padding-left: 116px;padding-top: 4px;">807,000đ</p></h4>
+                            <h4 style="float: left">Tổng tiền tạm tính: <p style="float: right;padding-left: 116px;padding-top: 4px;">${tongTien}đ</p></h4>
                             <button class="btn btn-dark" style="width: 410px">TIẾN HÀNH ĐẶT HÀNG</button>
                             <a href="/cua-hang/xem-chi-tiet-gio-hang"><p style="padding-right: 124px;padding-top: 15px;">Xem chi tiết giỏ hàng
                                 <i class="bi bi-arrow-right"></i></p>
@@ -4601,7 +4580,7 @@
             modal.classList.remove("show");
         }
     };
-
+    // Kết thúc
 
     $(
         ".product__color__select label, .shop__sidebar__size label, .product__details__option__size label"

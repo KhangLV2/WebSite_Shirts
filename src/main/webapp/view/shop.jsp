@@ -25,6 +25,39 @@
     <link rel="stylesheet" href="/css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="/css/slicknav.min.css" type="text/css">
     <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    <style>
+        /* Modal giỏ hàng nằm bên phải */
+        .modal-cart {
+            position: fixed;
+            top: 0;
+            right: -450px; /* Ẩn ban đầu */
+            width: 450px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+
+        .modal-cart.show {
+            right: 0;
+        }
+
+        .modal-cart-content {
+            padding: 20px;
+        }
+
+        .modal-cart .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 40px;
+            cursor: pointer;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -91,10 +124,51 @@
             </div>
             <div class="col-lg-3 col-md-3">
                 <div class="header__nav__option">
-                    <a href="#" class="search-switch"><img src="img/icon/search.png" alt=""></a>
-                    <a href="#"><img src="img/icon/heart.png" alt=""></a>
-                    <a href="#"><img src="img/icon/cart.png" alt=""> <span>0</span></a>
-                    <div class="price">$0.00</div>
+                    <a href="#" class="search-switch"><img src="${pageContext.request.contextPath}/img/icon/search.png" alt=""></a>
+                    <a href="#"><img src="${pageContext.request.contextPath}/img/icon/heart.png" alt=""></a>
+                    <%--                    <a href="#"><img src="${pageContext.request.contextPath}/img/icon/cart.png" alt="">--%>
+                    <%--                        <div class="price">Giỏ hàng(${gioHang})</div>--%>
+                    <%--                    </a>--%>
+                    <!-- Nút giỏ hàng -->
+                    <button class="btn" id="btnGioHang">🛒 Giỏ hàng<span style="color: red">(${slGioHang})</span></button>
+
+                    <!-- Modal giỏ hàng -->
+                    <div id="gioHangModal" class="modal-cart">
+                        <div class="modal-cart-content">
+                            <span class="close">&times;</span>
+                            <c:if test="${slGioHang==0}">
+                                <h5 style="text-align: left;padding-bottom: 8px">GIỎ HÀNG</h5>
+                               <p style="text-align: left">Bạn chưa có sản phẩm nào trong giỏ hàng</p>
+                            </c:if>
+                            <c:if test="${slGioHang!=0}">
+                            <h5 style="text-align: left;padding-bottom: 8px">GIỎ HÀNG</h5>
+                                <p style="text-align: left">Bạn đang có ${slGioHang} sản phẩm trong giỏ hàng.</p>
+                                <hr>
+                                <c:forEach var="gioHang" items="${gioHang}">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <img src="${gioHang.img}" alt="" style="width: 100%">
+                                        </div>
+                                        <input type="hidden" name="idHD" value="${gioHang.idHoaDon}">
+                                        <div class="col-9" style="text-align: left">
+                                            <p style="margin-bottom: 5px">	 ${gioHang.tenSanPham} - ${gioHang.tenMau} - ${gioHang.kichThuoc}</p>
+                                            <h5 style="margin-bottom: 6px">${gioHang.donGia}đ X ${gioHang.soLuong}</h5>
+                                            <a href="/cua-hang/xoa-product-gio-hang/${gioHang.idHoaDonChiTiet}" class="btn btn-light px-2 py-1" style="font-size: 12px;">Xóa</a>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                </c:forEach>
+                                <hr style="height: 2px;background-color: black;width: 100%;margin: 20px auto">
+                                <h4 style="float: left">Tổng tiền tạm tính: <p style="float: right;padding-left: 116px;padding-top: 4px;">${tongTien}đ</p></h4>
+                                <button class="btn btn-dark" style="width: 410px">TIẾN HÀNH ĐẶT HÀNG</button>
+                                <a href="/cua-hang/xem-chi-tiet-gio-hang"><p style="padding-right: 124px;padding-top: 15px;">Xem chi tiết giỏ hàng
+                                    <i class="bi bi-arrow-right"></i></p>
+                                </a>
+                            </c:if>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -805,6 +879,28 @@
 <script src="/js/mixitup.min.js"></script>
 <script src="/js/owl.carousel.min.js"></script>
 <script src="/js/main.js"></script>
+
+
 </body>
+
+<script>
+    // JavaScript để mở/đóng modal
+    document.getElementById("btnGioHang").onclick = function() {
+        document.getElementById("gioHangModal").classList.add("show");
+    };
+
+    document.querySelector(".modal-cart .close").onclick = function() {
+        document.getElementById("gioHangModal").classList.remove("show");
+    };
+
+    // Đóng nếu click ra ngoài modal
+    window.onclick = function(event) {
+        let modal = document.getElementById("gioHangModal");
+        if (event.target === modal) {
+            modal.classList.remove("show");
+        }
+    };
+    // Kết thúc
+</script>
 
 </html>

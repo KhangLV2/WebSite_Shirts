@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -18,7 +19,7 @@ public interface ChiTietHoaDonRepository extends JpaRepository<ChiTietHoaDon,Int
     ChiTietHoaDon findByIdHDCT(Integer id);
 
     @Query("SELECT new com.example.demo.response.GioHangResponse( " +
-            "cthd.id, ctsp.idMauSac.ten, ctsp.idKichThuoc.ten, ctsp.idSanPham.ten, " +
+            "cthd.id,cthd.idHoaDon.id ,ctsp.idMauSac.ten, ctsp.idKichThuoc.ten, ctsp.idSanPham.ten, " +
             "cthd.soLuong, cthd.donGia, img.hinhAnh1) " +
             "FROM ChiTietHoaDon cthd " +
             "JOIN ChiTietSanPham ctsp ON cthd.idCTSP.id = ctsp.id " +
@@ -30,5 +31,8 @@ public interface ChiTietHoaDonRepository extends JpaRepository<ChiTietHoaDon,Int
 
     @Query("select cthd from ChiTietHoaDon cthd where cthd.idHoaDon.id =?1")
     List<ChiTietHoaDon> findByIdHoaDon(Integer idHoaDon);
+
+    @Query("select SUM(hdct.donGia*hdct.soLuong) from ChiTietHoaDon hdct where hdct.idHoaDon=?1")
+    BigDecimal tongTienTrongGioHang(Integer idHoaDon);
 
 }
