@@ -54,8 +54,8 @@ public class TrangChuController {
 
     public TrangChuController() {
         idChiTietSanPham=0;
-        idKhachHang = 0;
-        tenKhachHang = "";
+//        idKhachHang = 0;
+//        tenKhachHang = "";
     }
 
     @GetMapping()
@@ -72,13 +72,13 @@ public class TrangChuController {
         model.addAttribute("listKichThuoc",listKichThuoc);
         model.addAttribute("listKieuTay",listKieuTay);
         model.addAttribute("listMauSac",listMauSac);
-        model.addAttribute("tenKH",tenKhachHang);
+//        model.addAttribute("tenKH",tenKhachHang);
 
         // Hiển thị thông tin sản phẩm lên giỏ hàng
-        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(idKhachHang,1);
+        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(3,1);
         model.addAttribute("gioHang",gioHangResponses);
 
-        int slGioHang = chiTietHoaDonRepository.countChiTietHoaDon(idKhachHang,1);
+        int slGioHang = chiTietHoaDonRepository.countChiTietHoaDon(3,1);
         model.addAttribute("slGioHang",slGioHang);
 
         BigDecimal tongTienNew = BigDecimal.ZERO;
@@ -108,8 +108,8 @@ public class TrangChuController {
 
         KhachHang khachHang = khachHangRepository.getByTaiKhoanAndMatKhau(taiKhoan, matKhau);
         KhachHang findTenKH = khachHangRepository.checkTaiKhoan(taiKhoan);
-        tenKhachHang = findTenKH.getHoTen();
-        idKhachHang = findTenKH.getId();
+//        tenKhachHang = findTenKH.getHoTen();
+//        idKhachHang = findTenKH.getId();
 
         if(khachHang==null) {
             model.addAttribute("mess", "Tài khoản hoặc mật khẩu không chính xác");
@@ -151,7 +151,7 @@ public class TrangChuController {
     public String detailProduct(@PathVariable Integer idProduct,
                                 Model model){
 
-        int slGioHang = chiTietHoaDonRepository.countChiTietHoaDon(idKhachHang,1);
+        int slGioHang = chiTietHoaDonRepository.countChiTietHoaDon(3,1);
         model.addAttribute("slGioHang",slGioHang);
 
         idChiTietSanPham= idProduct;
@@ -162,7 +162,7 @@ public class TrangChuController {
         model.addAttribute("hinhAnh",hinhAnh);
 
         // Hiển thị thông tin sản phẩm lên giỏ hàng
-        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(idKhachHang,1);
+        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(3,1);
         model.addAttribute("gioHang",gioHangResponses);
 
         BigDecimal tongTienNew = BigDecimal.ZERO;
@@ -190,7 +190,7 @@ public class TrangChuController {
           int sl = Integer.parseInt(soLuong);
 
         System.out.println("----------------SL----------"+sl);
-        System.out.println("-------------------id khách hàng-------------------"+idKhachHang);
+        System.out.println("-------------------id khách hàng-------------------"+3);
         System.out.println("----------------------------"+kichThuoc);
         System.out.println("----------------------------"+mauSac);
         System.out.println("----------------------------"+idSanPham);
@@ -206,7 +206,7 @@ public class TrangChuController {
         List<ChiTietHoaDon> listChiTietHoaDon = chiTietHoaDonRepository.findAll();
         List<ChiTietSanPham> listCTSP = chiTietSanPhamRepository.findAll();
 
-        HoaDon hoaDonKH = hoaDonRepository.findByKHandLoaiHDandTrangThai(idKhachHang,HoaDonRepository.HOA_DON_ON,1);
+        HoaDon hoaDonKH = hoaDonRepository.findByKHandLoaiHDandTrangThai(3,HoaDonRepository.HOA_DON_ON,1);
 //        System.out.println("-----------------------Hóa đơn khách hàng---------------------------"+hoaDonKH.getId());
         //Nếu khách hàng chưa có hóa đơn thì tạo hóa đơn mới cho khách hàng
         if (hoaDonKH==null){
@@ -216,7 +216,7 @@ public class TrangChuController {
                 hoaDon.setMa("HD" + (count + 001));
                 hoaDon.setPhuongThucThanhToan(1);
                 KhachHang khachHang = new KhachHang();
-                khachHang.setId(idKhachHang);
+                khachHang.setId(3);
                 hoaDon.setIdKhachHang(khachHang);
                 hoaDon.setNgayTao(LocalDateTime.now().withNano(0));
                 hoaDon.setTrangThai(1);
@@ -298,16 +298,83 @@ public class TrangChuController {
 
 
     @GetMapping("/xem-chi-tiet-gio-hang")
-    public String xemChiTietGioHang(){
-        // test git trên web xem có đc không
+    public String xemChiTietGioHang(Model model){
+        // Hiển thị số lượng sản phẩm trong giỏ hàng
+        int slGioHang = chiTietHoaDonRepository.countChiTietHoaDon(3,1);
+        model.addAttribute("slGioHang",slGioHang);
+
+        // Hiển thị thông tin sản phẩm lên giỏ hàng
+        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(3,1);
+        model.addAttribute("gioHang",gioHangResponses);
+
+        BigDecimal tongTienNew = BigDecimal.ZERO;
+        for(GioHangResponse listGH: gioHangResponses){
+            tongTienNew = tongTienNew.add(listGH.getDonGia().multiply(BigDecimal.valueOf(listGH.getSoLuong())));
+
+        }
+
+        model.addAttribute("tongTien",tongTienNew);
+
         return "shopping_cart";
     }
 
     @GetMapping("/xoa-product-gio-hang/{idHDCT}")
-    public String xoaProductCard(@PathVariable Integer idHDCT){
+    public String xoaProductCard(@PathVariable Integer idHDCT,RedirectAttributes redirectAttributes){
 
         chiTietHoaDonRepository.deleteById(idHDCT);
-        return "redirect:/cua-hang/detail-product/"+ idChiTietSanPham;
+        redirectAttributes.addFlashAttribute("deleteMessage", "Xóa thành công sản phẩm");
+
+        return "redirect:/cua-hang/xem-chi-tiet-gio-hang";
+    }
+
+    @GetMapping("/cong-sl-gio-hang/{idHDCT}")
+    public String congSLinGioHang(@PathVariable Integer idHDCT){
+
+        ChiTietHoaDon chiTietHoaDon = chiTietHoaDonRepository.findByIdHDCT(idHDCT);
+        chiTietHoaDon.setSoLuong(chiTietHoaDon.getSoLuong()+1);
+        chiTietHoaDonRepository.save(chiTietHoaDon);
+
+        return "redirect:/cua-hang/xem-chi-tiet-gio-hang";
+    }
+
+    @GetMapping("/tru-sl-gio-hang/{idHDCT}")
+    public String truSLinGioHang(@PathVariable Integer idHDCT,
+                                 RedirectAttributes redirectAttributes){
+        ChiTietHoaDon chiTietHoaDon = chiTietHoaDonRepository.findByIdHDCT(idHDCT);
+
+        if (chiTietHoaDon.getSoLuong()<=1){
+            redirectAttributes.addFlashAttribute("updateMessage", "Không thể đạt số lượng nhỏ hơn 1");
+            return "redirect:/cua-hang/xem-chi-tiet-gio-hang";
+        }
+
+        chiTietHoaDon.setSoLuong(chiTietHoaDon.getSoLuong()-1);
+        chiTietHoaDonRepository.save(chiTietHoaDon);
+
+        return "redirect:/cua-hang/xem-chi-tiet-gio-hang";
+    }
+
+    @GetMapping("/check-out")
+    public String checkOutProduct(Model model){
+        // Hiển thị thông tin sản phẩm lên giỏ hàng
+        List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(3,1);
+        model.addAttribute("gioHang",gioHangResponses);
+        return "checkout";
+    }
+
+    @GetMapping("/tru-sl-check-out/{idHDCT}")
+    public String truSLProductCheckOut(@PathVariable Integer idHDCT){
+        ChiTietHoaDon chiTietHoaDon = chiTietHoaDonRepository.findByIdHDCT(idHDCT);
+        chiTietHoaDon.setSoLuong(chiTietHoaDon.getSoLuong()-1);
+        chiTietHoaDonRepository.save(chiTietHoaDon);
+        return "redirect:/cua-hang/check-out";
+    }
+
+    @GetMapping("/cong-sl-check-out/{idHDCT}")
+    public String congSLProductCheckOut(@PathVariable Integer idHDCT){
+        ChiTietHoaDon chiTietHoaDon = chiTietHoaDonRepository.findByIdHDCT(idHDCT);
+        chiTietHoaDon.setSoLuong(chiTietHoaDon.getSoLuong()+1);
+        chiTietHoaDonRepository.save(chiTietHoaDon);
+        return "redirect:/cua-hang/check-out";
     }
 
 }
