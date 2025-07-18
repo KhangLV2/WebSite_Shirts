@@ -171,7 +171,7 @@ public class TrangChuController {
 
         }
 
-        System.out.println("------------------------Tổng tiền--------------------------------"+tongTienNew);
+//        System.out.println("------------------------Tổng tiền--------------------------------"+tongTienNew);
         model.addAttribute("tongTien",tongTienNew);
 
         List<KichThuoc> listKichThuoc = kichThuocRepository.findAll();
@@ -358,12 +358,34 @@ public class TrangChuController {
         // Hiển thị thông tin sản phẩm lên giỏ hàng
         List<GioHangResponse> gioHangResponses = chiTietHoaDonRepository.getAllGioHang(3,1);
         model.addAttribute("gioHang",gioHangResponses);
+
+        BigDecimal tongTienNew = BigDecimal.ZERO;
+        for(GioHangResponse listGH: gioHangResponses){
+            tongTienNew = tongTienNew.add(listGH.getDonGia().multiply(BigDecimal.valueOf(listGH.getSoLuong())));
+
+        }
+
+        model.addAttribute("tongTien",tongTienNew);
         return "checkout";
     }
 
+    @GetMapping("/xoa-product-check-out/{idHDCT}")
+    public String xoaProductCheckOut(@PathVariable Integer idHDCT,
+                                     RedirectAttributes redirectAttributes){
+        chiTietHoaDonRepository.deleteById(idHDCT);
+        redirectAttributes.addFlashAttribute("deleteMessage", "Xóa thành công sản phẩm");
+
+        return "redirect:/cua-hang/check-out";
+    }
+
     @GetMapping("/tru-sl-check-out/{idHDCT}")
-    public String truSLProductCheckOut(@PathVariable Integer idHDCT){
+    public String truSLProductCheckOut(@PathVariable Integer idHDCT,
+                                       RedirectAttributes redirectAttributes){
         ChiTietHoaDon chiTietHoaDon = chiTietHoaDonRepository.findByIdHDCT(idHDCT);
+        if (chiTietHoaDon.getSoLuong()<=1){
+            redirectAttributes.addFlashAttribute("updateMessage", "Không thể đạt số lượng nhỏ hơn 1");
+            return "redirect:/cua-hang/check-out";
+        }
         chiTietHoaDon.setSoLuong(chiTietHoaDon.getSoLuong()-1);
         chiTietHoaDonRepository.save(chiTietHoaDon);
         return "redirect:/cua-hang/check-out";

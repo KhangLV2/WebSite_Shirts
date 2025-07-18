@@ -15,6 +15,12 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <style>
         .bread {
@@ -83,6 +89,7 @@
             justify-content: space-between;
             border-bottom: 1px solid #ddd;
             padding: 15px 0;
+            margin-top: 40px;
         }
 
         .cart-left {
@@ -177,6 +184,10 @@
             color: #999;
             text-decoration: line-through;
         }
+
+        .delete-btn a:hover {
+            color: red;
+        }
     </style>
 </head>
 
@@ -243,7 +254,7 @@
                 </div>
 
             </div>
-            <div class="col-6" style="margin-top: 40px;">
+            <div class="col-6" style="height: 510px;background-color: #f9f9f9">
 
                 <c:forEach var="gioHang" items="${gioHang}">
                     <div class="cart-item">
@@ -266,15 +277,18 @@
 <%--                                    </select>--%>
 <%--                                </div>--%>
                                 <div class="delete-btn">
-                                    <i class="bi bi-trash3"></i> Xóa
+                                    <a href="/cua-hang/xoa-product-check-out/${gioHang.idHoaDonChiTiet}"
+                                       style="text-decoration: none; color: black;"
+                                       onmouseover="this.style.color='red'"
+                                       onmouseout="this.style.color='black'">
+                                        <i class="bi bi-trash3"></i> Xóa
+                                    </a>
                                 </div>
+
                             </div>
                         </div>
                         <div class="cart-right">
                             <div class="quantity-control">
-<%--                                <button>-</button>--%>
-<%--                                <span>1</span>--%>
-<%--                                <button>+</button>--%>
                                  <div class="input-group-btn">
                                     <a href="/cua-hang/tru-sl-check-out/${gioHang.idHoaDonChiTiet}" class="btn btn-minus" >
                                        -
@@ -287,8 +301,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="price">${gioHang.donGia}</div>
-                            <div class="old-price">399.000đ</div>
+                            <div class="price">${gioHang.donGia*gioHang.soLuong}</div>
                         </div>
                     </div>
                 </c:forEach>
@@ -300,9 +313,9 @@
                     </div>
                     <hr style="color: #999;margin-top: 25px;">
                 </div>
-                <p style="margin-top: 25px;">Phí vận chuyển <span style="float: right;">120.000đ</span></p>
+                <p style="margin-top: 25px;">Phí vận chuyển <span style="float: right;">0đ</span></p>
                 <hr style="color: #999;margin-top: 25px;margin-bottom: 25px;">
-                <h4>Tổng cộng <span style="float: right;">420.000đ</span></h4>
+                <h4>Tổng cộng <span style="float: right;">${tongTien}</span></h4>
                 <button class="btn btn-primary"
                         style="float: right; margin-top: 25px;padding: 15px 15px;font-size: 16px;font-weight: bold;">Hoàn
                     tất
@@ -325,6 +338,35 @@
             option.classList.add('selected');
         });
     });
+
+    // Hiển thị thông báo
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+
+    <%--    Hiển thị thông báo thành công--%>
+    <c:if test="${not empty deleteMessage}">
+    Toast.fire({
+        icon: "success",
+        title: "${deleteMessage}"
+    });
+    </c:if>
+
+    <%--    Hiển thị thông báo thất bại --%>
+    <c:if test="${not empty updateMessage}">
+    Toast.fire({
+        icon: "error",
+        title: "${updateMessage}"
+    });
+    </c:if>
 </script>
 
 

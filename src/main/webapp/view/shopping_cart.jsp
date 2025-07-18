@@ -4143,7 +4143,7 @@
         }
     });
 
-    <%--    Hiển thị thông báo thành công khi đăng nhập thành công--%>
+    <%--    Hiển thị thông báo thành công--%>
     <c:if test="${not empty deleteMessage}">
     Toast.fire({
         icon: "success",

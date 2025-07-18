@@ -100,7 +100,7 @@
                                 </c:forEach>
                                 <hr style="height: 2px;background-color: black;width: 100%;margin: 20px auto">
                                 <h4 style="float: left">Tổng tiền tạm tính: <p style="float: right;padding-left: 116px;padding-top: 4px;">${tongTien}đ</p></h4>
-                                <button class="btn btn-dark" style="width: 410px">TIẾN HÀNH ĐẶT HÀNG</button>
+                                <a href="/cua-hang/check-out" class="btn btn-dark" style="width: 410px">TIẾN HÀNH ĐẶT HÀNG</a>
                                 <a href="/cua-hang/xem-chi-tiet-gio-hang"><p style="padding-right: 124px;padding-top: 15px;">Xem chi tiết giỏ hàng
                                     <i class="bi bi-arrow-right"></i></p>
                                 </a>
